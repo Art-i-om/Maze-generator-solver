@@ -1,0 +1,23 @@
+MAZE_BOUND_X: int = 10
+MAZE_BOUND_Y: int = 10
+
+RES = WIDTH, HEIGHT = 1200, 800
+
+CELL_SIZE: int = 40
+HALF_CELL_SIZE: int = CELL_SIZE // 2
+
+DARK_BLUE = (0, 0, 139)
+LIGHT_BLUE = (173, 216, 230)
+RED = (255, 0, 0)
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+
+FONT_SIZE = 24
+
+# Fire Vfs
+STEPS_BETWEEN_COLORS = 12
+COLORS = ['black', 'red', 'orange', 'yellow', 'white']
+PIXEL_SIZE = 4
+FIRE_REPS = 4
+FIRE_WIDTH = WIDTH // (PIXEL_SIZE * FIRE_REPS)
+FIRE_HEIGHT = HEIGHT // PIXEL_SIZE
