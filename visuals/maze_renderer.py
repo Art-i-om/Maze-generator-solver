@@ -3,7 +3,8 @@ import pygame
 from maze_utils.maze import Maze
 from maze_utils.cell import Cell
 from maze_utils.direction import Direction
-from settings import CELL_SIZE, HALF_CELL_SIZE, LIGHT_BLUE, RED
+from settings import (CELL_SIZE, HALF_CELL_SIZE, LIGHT_BLUE, RED,
+                      HALF_HEIGHT, HALF_WIDTH, HALF_SIDEBAR_WIDTH)
 
 class MazeRenderer:
     def __init__(self, screen: pygame.Surface, maze: Maze):
@@ -12,9 +13,11 @@ class MazeRenderer:
 
     def get_cell_screen_pos(self, pos: tuple[int, int]) -> tuple[int, int]:
         x, y = pos
+        half_bound_x: int = (self.maze.bound_x * CELL_SIZE) // 2
+        half_bound_y: int = (self.maze.bound_y * CELL_SIZE) // 2
         return (
-            x * CELL_SIZE + 100,
-            y * CELL_SIZE + 100
+            (x * CELL_SIZE + HALF_WIDTH - half_bound_x) + HALF_CELL_SIZE + HALF_SIDEBAR_WIDTH,
+            (y * CELL_SIZE + HALF_HEIGHT - half_bound_y) + HALF_CELL_SIZE
         )
 
     def draw_wall(self, pos: tuple[int, int], direction: Direction):
@@ -64,3 +67,27 @@ class MazeRenderer:
             pygame.draw.lines(
                 self.screen, RED, False, path, 2
             )
+
+    def hide_path(self):
+        pass
+
+    @property
+    def maze_rect(self) -> pygame.Rect:
+        top_left_cell = self.get_cell_screen_pos((0, 0))
+        down_right_cell = self.get_cell_screen_pos((self.maze.bound_x - 1, self.maze.bound_y - 1))
+
+        wall_padding = 6
+
+        left_border_pos = top_left_cell[0] - HALF_CELL_SIZE - wall_padding
+        right_border_pos = down_right_cell[0] + HALF_CELL_SIZE + wall_padding
+
+        up_border_pos = top_left_cell[1] - HALF_CELL_SIZE - wall_padding
+        down_border_pos = down_right_cell[1] + HALF_CELL_SIZE + wall_padding
+
+        size_x = right_border_pos - left_border_pos
+        size_y = down_border_pos - up_border_pos
+
+        final_x = max(0, int(left_border_pos))
+        final_y = max(0, int(up_border_pos))
+
+        return pygame.Rect(final_x, final_y, size_x, size_y)

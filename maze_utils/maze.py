@@ -2,18 +2,22 @@ from collections import deque
 from maze_utils.cell import Cell
 from maze_utils.direction import Direction
 from random import choice, randint
+from settings import INIT_MAZE_BOUND_X, INIT_MAZE_BOUND_Y
 
 
 class Maze:
-    def __init__(self, bound_x: int, bound_y: int):
-        self.bound_x = bound_x
-        self.bound_y = bound_y
+    def __init__(self):
+        self.bound_x = INIT_MAZE_BOUND_X
+        self.bound_y = INIT_MAZE_BOUND_Y
         self.grid: list[list[Cell]] = []
         self.exit_cells: tuple[tuple[Cell, Direction], tuple[Cell, Direction]]
-        self.generate_maze(1000)
+        self.generate_maze()
 
-    def init_maze(self):
+    def init_maze(self, bound_x: int, bound_y: int):
         self.grid.clear()
+
+        self.bound_x = bound_x
+        self.bound_y = bound_y
 
         for y in range(self.bound_y):
             row: list[Cell] = []
@@ -30,13 +34,13 @@ class Maze:
             for x in range(self.bound_x):
                 print(self.grid[y][x])
 
-    def generate_maze(self, ops: int = 0):
-        self.init_maze()
+    def generate_maze(self, bound_x: int = INIT_MAZE_BOUND_X, bound_y: int = INIT_MAZE_BOUND_Y):
+        self.init_maze(bound_x, bound_y)
         self.generate_exits()
 
         origin: Cell = self.grid[self.bound_y - 1][self.bound_x - 1]
 
-        for i in range(ops):
+        for i in range(self.steps_to_generate):
             possible_directions: list[Direction] = origin.possible_directions
             next_direction: Direction = choice(possible_directions)
             origin.change_direction(next_direction)
@@ -45,9 +49,9 @@ class Maze:
     def generate_exits(self):
         self.exit_cells = self.rand_cell_near_bound
 
-    def solve_maze(self):
-
-        pass
+    @property
+    def steps_to_generate(self):
+        return self.bound_x * self.bound_y * 100
 
     @property
     def rand_cell_near_bound(self) -> tuple[tuple[Cell, Direction], tuple[Cell, Direction]]:
